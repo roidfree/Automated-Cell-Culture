@@ -2,20 +2,28 @@
 #define IN2 8    // Motor direction pin 2
 #define ENA 9    // PWM speed control
 
-#define BUTTON 2 // Start/Stop button
-
 bool pumpRunning = false; // Track pump state
 
 void setup() {
     pinMode(IN1, OUTPUT);
     pinMode(IN2, OUTPUT);
     pinMode(ENA, OUTPUT);
-    pinMode(BUTTON, INPUT_PULLUP); // Use internal pull-up resistor
-
-    attachInterrupt(digitalPinToInterrupt(BUTTON), togglePump, FALLING); // Interrupt on button press
+    Serial.begin(9600); // Initialize Serial Monitor
+    Serial.println("Enter '1' to START pump, '0' to STOP pump");
 }
 
 void loop() {
+    if (Serial.available()) {  // Check for input
+        char command = Serial.read();
+        if (command == '1') {
+            pumpRunning = true;
+            Serial.println("Pump ON");
+        } else if (command == '0') {
+            pumpRunning = false;
+            Serial.println("Pump OFF");
+        }
+    }
+
     if (pumpRunning) {
         digitalWrite(IN1, HIGH);
         digitalWrite(IN2, LOW);  // Forward direction
@@ -26,10 +34,3 @@ void loop() {
         analogWrite(ENA, 0);
     }
 }
-
-// Interrupt function to toggle pump state
-void togglePump() {
-    delay(50); // Debounce delay
-    pumpRunning = !pumpRunning;
-}
-S
