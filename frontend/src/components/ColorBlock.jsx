@@ -5,9 +5,16 @@ const ColorBlock = ({ color }) => {
     <div className={`color-block ${color}`}>
       <style jsx>{`
         .color-block {
-          width: 24px;
-          height: 24px;
-          border-radius: 4px;
+          width: 40px;
+          height: 45;
+          border-bottom-right-radius: 0px;
+          border-top-right-radius: 0px;
+          border-bottom-left-radius: 8px;
+          border-top-left-radius: 8px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+
         }
         .purple {
           background-color: #4f46e5;

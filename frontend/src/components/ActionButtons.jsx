@@ -1,23 +1,24 @@
 // ActionButtons.jsx
 import React from "react";
 
-const ActionButtons = () => {
+const ActionButtons = ({ onIncrease, onDecrease, onConfirm }) => {
   return (
     <div className="action-buttons">
-      <button className="action-button">-</button>
-      <button className="action-button">+</button>
-      <button className="action-button">Confirm</button>
+      <button className="action-button" onClick={onDecrease}>-</button>
+      <button className="action-button" onClick={onIncrease}>+</button>
+      <button className="action-button" onClick={onConfirm}>Confirm</button>
 
       <style jsx>{`
         .action-buttons {
           display: flex;
-          justify-content: space-between; /* Ensure buttons are spread out */
-          gap: 10px; /* Space between the buttons */
+          justify-content: center;
+          gap: 10px;
+          margin-top: 20px;
         }
 
         .action-button {
-          padding: 8px 16px; /* Reduced padding for smaller buttons */
-          font-size: 14px; /* Smaller font size */
+          padding: 10px 20px;
+          font-size: 16px;
           background-color: #00664f;
           color: white;
           border: none;
@@ -27,19 +28,13 @@ const ActionButtons = () => {
         }
 
         .action-button:hover {
-          background-color: #004d3f; /* Slightly darker green on hover */
+          background-color: #004d3f;
         }
 
         @media (max-width: 480px) and (min-height: 800px) {
-          .action-buttons {
-            flex-wrap: nowrap; /* Prevent buttons from stacking */
-            width: 100%; /* Ensure the buttons stretch to fit the container */
-            justify-content: space-between; /* Keep buttons in a row */
-          }
-
           .action-button {
-            font-size: 14px; /* Further reduce font size for smaller screens */
-            padding: 6px 12px; /* Even smaller padding for the buttons */
+            font-size: 14px;
+            padding: 6px 12px;
           }
         }
       `}</style>

@@ -1,10 +1,10 @@
 import React from "react";
 
-const CultureSection = () => {
+const CultureSection = ({ onStart }) => {
   return (
     <section className="culture-section">
       <h2 className="culture-text">Begin cell Culture</h2>
-      <button className="start-button">Start</button>
+      <button className="start-button" onClick={onStart}>Start</button>
       <style jsx>{`
         .culture-section {
           display: flex;
@@ -37,4 +37,3 @@ const CultureSection = () => {
 };
 
 export default CultureSection;
-
