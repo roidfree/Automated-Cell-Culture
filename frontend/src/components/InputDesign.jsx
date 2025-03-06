@@ -61,7 +61,7 @@ const InputDesign = () => {
 
     // Send the confirmed volumes to the backend (Flask)
     try {
-      const response = await fetch("http://your-flask-server-ip:5000/start_culture", {
+      const response = await fetch("http://127.0.0.1:5000/start_culture", { 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
