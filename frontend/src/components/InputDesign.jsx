@@ -60,18 +60,18 @@ const InputDesign = () => {
     const confirmedChemicals = Object.keys(confirmed).filter(
       (chemical) => confirmed[chemical]
     );
-  
+
     if (confirmedChemicals.length !== 1) {
       alert("Please confirm exactly one chemical before starting the culture.");
       return;
     }
-  
+
     // Prepare the confirmed volumes object
     const confirmedVolumes = {};
     confirmedChemicals.forEach((chemical) => {
       confirmedVolumes[chemical] = volumes[chemical];
     });
-  
+
     // Send the confirmed volumes to the backend (Flask)
     try {
       const response = await fetch("http://127.0.0.1:5000/start_culture", {
@@ -81,20 +81,34 @@ const InputDesign = () => {
         },
         body: JSON.stringify(confirmedVolumes),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to start the cell culture.");
       }
-  
+
       const data = await response.json();
       console.log("Backend Response:", data);
       alert("Cell culture started successfully!");
+
+      // Reset all fields after success
+      setVolumes({
+        PBS: 0,
+        Trypsin: 0,
+        Medium: 0,
+      });
+
+      setConfirmed({
+        PBS: false,
+        Trypsin: false,
+        Medium: false,
+      });
+
+      setActiveChemical(null); // Unhighlight the input fields
     } catch (error) {
       console.error("Error:", error);
       alert("There was an error while communicating with the backend.");
     }
   };
-  
 
   return (
     <>
