@@ -38,30 +38,43 @@ const InputDesign = () => {
 
   const handleConfirm = () => {
     if (activeChemical) {
-      setConfirmed((prev) => ({
-        ...prev,
-        [activeChemical]: !prev[activeChemical], // Toggle confirmation state
-      }));
+      setConfirmed((prev) => {
+        const newConfirmed = { ...prev };
+        if (prev[activeChemical]) {
+          // Unconfirm the chemical if it's already confirmed
+          newConfirmed[activeChemical] = false;
+        } else {
+          // Confirm the chemical and unconfirm all others
+          Object.keys(newConfirmed).forEach(
+            (chemical) => (newConfirmed[chemical] = false)
+          );
+          newConfirmed[activeChemical] = true;
+        }
+        return newConfirmed;
+      });
     }
   };
 
-  // Function to send the confirmed volumes to Flask when "Start" is clicked
   const handleStartCellCulture = async () => {
-    // Check if all chemicals have been confirmed
-    if (!confirmed.PBS || !confirmed.Trypsin || !confirmed.Medium) {
-      alert("Please confirm all volumes before starting the culture.");
+    // Check if exactly one chemical is confirmed
+    const confirmedChemicals = Object.keys(confirmed).filter(
+      (chemical) => confirmed[chemical]
+    );
+
+    if (confirmedChemicals.length !== 1) {
+      alert("Please confirm exactly one chemical before starting the culture.");
       return;
     }
 
-    const confirmedVolumes = {
-      PBS: volumes.PBS,
-      Trypsin: volumes.Trypsin,
-      Medium: volumes.Medium,
-    };
+    // Prepare the confirmed volumes object
+    const confirmedVolumes = {};
+    confirmedChemicals.forEach((chemical) => {
+      confirmedVolumes[chemical] = volumes[chemical];
+    });
 
     // Send the confirmed volumes to the backend (Flask)
     try {
-      const response = await fetch("http://127.0.0.1:5000/start_culture", { 
+      const response = await fetch("http://127.0.0.1:5000/start_culture", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,6 +89,21 @@ const InputDesign = () => {
       const data = await response.json();
       console.log("Backend Response:", data);
       alert("Cell culture started successfully!");
+
+      // Reset all fields after success
+      setVolumes({
+        PBS: 0,
+        Trypsin: 0,
+        Medium: 0,
+      });
+
+      setConfirmed({
+        PBS: false,
+        Trypsin: false,
+        Medium: false,
+      });
+
+      setActiveChemical(null); // Unhighlight the input fields
     } catch (error) {
       console.error("Error:", error);
       alert("There was an error while communicating with the backend.");
