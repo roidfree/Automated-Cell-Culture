@@ -1,11 +1,73 @@
-// Define Arduino pins for L298N control const int IN1 = 8; // Port A, coil 1 (A+) const int IN2 = 9; // Port A, coil 1 (A-) const int IN3 = 10; // Port B, coil 2 (B+) const int IN4 = 11; // Port B, coil 2 (B-) const int ENA = 5; // Enable A (PWM for speed control of Port A) const int ENB = 6; // Enable B (PWM for speed control of Port B)
-// Step sequence for CW rotation (from KPHM100 manual) int stepSequenceCW[4][4] = { {HIGH, HIGH, LOW, LOW}, // Step 1: A+ and A- energized {LOW, HIGH, HIGH, LOW}, // Step 2: A- and B+ energized {LOW, LOW, HIGH, HIGH}, // Step 3: B+ and B- energized {HIGH, LOW, LOW, HIGH} // Step 4: A+ and B- energized };
-// Step sequence for CCW rotation (reverse of CW) int stepSequenceCCW[4][4] = { {HIGH, LOW, LOW, HIGH}, // Step 4 reversed {LOW, LOW, HIGH, HIGH}, // Step 3 reversed {LOW, HIGH, HIGH, LOW}, // Step 2 reversed {HIGH, HIGH, LOW, LOW} // Step 1 reversed };
-int currentStep = 0; // Current step in the sequence int direction = 1; // 1 for CW, -1 for CCW int motorSpeed = 100; // Initial speed (PWM value 0-255, adjust as needed)
-void setup() { // Initialize serial communication for debugging Serial.begin(9600);
-// Set all pins as outputs pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT); pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT); pinMode(ENA, OUTPUT); pinMode(ENB, OUTPUT);
-// Initialize pins to LOW digitalWrite(IN1, LOW); digitalWrite(IN2, LOW); digitalWrite(IN3, LOW); digitalWrite(IN4, LOW); analogWrite(ENA, motorSpeed); // Set initial speed for Port A analogWrite(ENB, motorSpeed); // Set initial speed for Port B }
-void loop() { // Run the motor at the current step if (direction == 1) { // CW rotation digitalWrite(IN1, stepSequenceCW[currentStep][0]); digitalWrite(IN2, stepSequenceCW[currentStep][1]); digitalWrite(IN3, stepSequenceCW[currentStep][2]); digitalWrite(IN4, stepSequenceCW[currentStep][3]); } else { // CCW rotation digitalWrite(IN1, stepSequenceCCW[currentStep][0]); digitalWrite(IN2, stepSequenceCCW[currentStep][1]); digitalWrite(IN3, stepSequenceCCW[currentStep][2]); digitalWrite(IN4, stepSequenceCCW[currentStep][3]); }
-// Delay to control speed (adjust for desired RPM) delay(5); // Adjust this delay to change motor speed (smaller = faster)
-// Move to the next step currentStep = (currentStep + 1) % 4;
-// Example: Change direction and speed via serial input (for testing) if (Serial.available() > 0) { char command = Serial.read(); switch (command) { case 'f': // Forward (CW) direction = 1; Serial.println("Moving Forward (CW)"); break; case 'b': // Backward (CCW) direction = -1; Serial.println("Moving Backward (CCW)"); break; case 's': // Stop digitalWrite(IN1, LOW); digitalWrite(IN2, LOW); digitalWrite(IN3, LOW); digitalWrite(IN4, LOW); Serial.println("Stopped"); break; case '+': // Increase speed motorSpeed += 50; if (motorSpeed > 255) motorSpeed = 255; // Limit PWM to 255 analogWrite(ENA, motorSpeed); analogWrite(ENB, motorSpeed); Serial.print("Speed increased to "); Serial.println(motorSpeed); break; case '-': // Decrease speed motorSpeed -= 50; if (motorSpeed < 0) motorSpeed = 0; analogWrite(ENA, motorSpeed); analogWrite(ENB, motorSpeed); Serial.print("Speed decreased to "); Serial.println(motorSpeed); break; } } }
+// Arduino Mega Serial-Controlled DC Motor
+// Uses L298N motor driver
+// Press 'f' in Serial Monitor to activate the motor
+// Press 's' in Serial Monitor to stop the motor
+
+// L298N Motor Driver Pins
+//const int motorEnable = 9;  // Enable pin for motor speed control
+const int motorPin1 = 2;    // Motor control pin 1
+const int motorPin2 = 3;    // Motor control pin 2
+
+// Variables for serial control
+char receivedChar;
+boolean motorRunning = false;
+
+void setup() {
+  // Set motor control pins as outputs
+//  pinMode(motorEnable, OUTPUT);
+  pinMode(motorPin1, OUTPUT);
+  pinMode(motorPin2, OUTPUT);
+  
+  // Initialize serial communication
+  Serial.begin(9600);
+  Serial.println("Serial-controlled motor ready");
+  Serial.println("Press 'f' to start motor, 's' to stop");
+  
+  // Ensure motor is off at startup
+  stopMotor();
+}
+
+void loop() {
+  // Check if serial data is available
+  if (Serial.available() > 0) {
+    // Read the incoming byte
+    receivedChar = Serial.read();
+    
+    // Check if the received character is 'f' (start motor)
+    if (receivedChar == 'f') {
+      startMotor();
+      Serial.println("Motor ON");
+    } 
+    // Check if the received character is 's' (stop motor)
+    else if (receivedChar == 's') {
+      stopMotor();
+      Serial.println("Motor OFF");
+    }
+
+    // Clear any remaining characters in the buffer
+    while (Serial.available() > 0) {
+      Serial.read();
+    }
+  }
+}
+
+// Function to start the motor
+void startMotor() {
+  // Set motor direction (forward)
+  digitalWrite(motorPin1, HIGH);
+  digitalWrite(motorPin2, LOW);
+  
+  // Set motor speed (0-255)
+//  analogWrite(motorEnable, 200);  // ~75% speed
+  
+  motorRunning = true;
+}
+
+// Function to stop the motor
+void stopMotor() {
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, LOW);
+//  analogWrite(motorEnable, 0);
+  
+  motorRunning = false;
+}
