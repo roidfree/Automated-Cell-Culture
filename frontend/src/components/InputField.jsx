@@ -8,7 +8,7 @@ const InputField = ({ text, volume, isActive, isConfirmed, onClick }) => {
       onClick={onClick}
     >
       <div className="input-text">
-        {text} <strong>{volume} µL</strong>
+        {text} <strong>{volume} ml</strong>
       </div>
       {isConfirmed && (
         <div className="check-icon">
