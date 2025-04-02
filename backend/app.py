@@ -1,35 +1,27 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS  
 import serial
-import serial.tools.list_ports  # Import for auto-detecting Arduino
 import time
 
 app = Flask(__name__)
 CORS(app)
 
-# Function to automatically find the Arduino's port
-def find_arduino():
-    ports = list(serial.tools.list_ports.comports())
-    for port in ports:
-        print(f"Found port: {port.device} - {port.description}")  # Debugging: Show all ports
-        if "Arduino" in port.description or "usbmodem" in port.device or "ttyACM" in port.device:
-            return port.device  # Return the first matching port
-    return None  # If no Arduino is found
+# Manually set the Arduino port
+arduino_port = "/dev/cu.usbmodem101"
 
-# Try to connect to Arduino automatically
-arduino_port = find_arduino()
-if arduino_port:
+def connect_arduino():
     try:
         print(f"Connecting to Arduino on {arduino_port}...")
         arduino = serial.Serial(port=arduino_port, baudrate=9600, timeout=1)
-        time.sleep(2)  #
+        time.sleep(5)  # Give Arduino time to initialize
         print("Arduino connection successful!")
+        return arduino
     except Exception as e:
         print(f"Error connecting to Arduino: {e}")
-        arduino = None
-else:
-    print("No Arduino found. Check connections.")
-    arduino = None
+        return None
+
+# Establish connection
+arduino = connect_arduino()
 
 @app.route('/start_culture', methods=['POST'])
 def start_culture():
