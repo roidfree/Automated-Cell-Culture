@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Manually set the Arduino port
-arduino_port = "COM11"
+arduino_port = "/dev/ttyUSB0"
 
 def connect_arduino():
     try:
