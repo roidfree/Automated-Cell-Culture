@@ -182,13 +182,14 @@ const InputDesign = () => {
 
       <style jsx>{`
         .app-container {
-          width: 100%;
+          width: 100vw;
           min-height: 100vh;
           background-color: #00664f;
           display: flex;
           justify-content: center;
           align-items: center;
           padding: 0;
+          margin: 0;
         }
 
         .content-card {
