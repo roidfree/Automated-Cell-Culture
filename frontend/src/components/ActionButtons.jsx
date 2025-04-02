@@ -11,30 +11,40 @@ const ActionButtons = ({ onIncrease, onDecrease, onConfirm }) => {
       <style jsx>{`
         .action-buttons {
           display: flex;
-          justify-content: center;
-          gap: 10px;
-          margin-top: 20px;
+          justify-content: space-between;
+          padding: 0;
+          gap: 24px;
         }
 
         .action-button {
-          padding: 10px 20px;
-          font-size: 16px;
+          flex: 1;
+          padding: 16px;
+          min-height: 72px;
+          font-size: 24px;
           background-color: #00664f;
           color: white;
           border: none;
-          border-radius: 8px;
+          border-radius: 12px;
           cursor: pointer;
           transition: background-color 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .action-button:hover {
           background-color: #004d3f;
         }
 
-        @media (max-width: 480px) and (min-height: 800px) {
+        @media (max-width: 480px) {
+          .action-buttons {
+            gap: 16px;
+          }
+          
           .action-button {
-            font-size: 14px;
-            padding: 6px 12px;
+            padding: 14px;
+            min-height: 64px;
+            font-size: 22px;
           }
         }
       `}</style>

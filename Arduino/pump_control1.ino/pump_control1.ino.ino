@@ -1,4 +1,4 @@
-String receivedData;  // Variable to store received data
+    String receivedData;  // Variable to store received data
 const int motorPin1 = 2;    // Motor control pin 1
 const int motorPin2 = 3;    // Motor control pin 2
 const float FLOW_RATE = 75.0; // Estimated flow rate in mL/min

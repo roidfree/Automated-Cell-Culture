@@ -122,53 +122,61 @@ const InputDesign = () => {
       />
       <main className="app-container">
         <article className="content-card">
-          <h1 className="header">Start a new culture</h1>
+          <div className="main-content">
+            <h1 className="header">Start a new culture</h1>
 
-          {/* PBS Input */}
-          <div className="input-group">
-            <ColorBlock color="purple" />
-            <InputField
-              text="Enter a volume of PBS:"
-              volume={volumes.PBS}
-              isActive={activeChemical === "PBS"}
-              isConfirmed={confirmed.PBS}
-              onClick={() => setActiveChemical("PBS")}
-            />
+            {/* Input Fields Container */}
+            <div className="input-fields-container">
+              {/* PBS Input */}
+              <div className="input-group">
+                <ColorBlock color="purple" />
+                <InputField
+                  text="Enter a volume of PBS:"
+                  volume={volumes.PBS}
+                  isActive={activeChemical === "PBS"}
+                  isConfirmed={confirmed.PBS}
+                  onClick={() => setActiveChemical("PBS")}
+                />
+              </div>
+
+              {/* Trypsin Input */}
+              <div className="input-group">
+                <ColorBlock color="orange" />
+                <InputField
+                  text="Enter a volume of Trypsin:"
+                  volume={volumes.Trypsin}
+                  isActive={activeChemical === "Trypsin"}
+                  isConfirmed={confirmed.Trypsin}
+                  onClick={() => setActiveChemical("Trypsin")}
+                />
+              </div>
+
+              {/* Medium Input */}
+              <div className="input-group">
+                <ColorBlock color="pink" />
+                <InputField
+                  text="Enter a volume of Medium:"
+                  volume={volumes.Medium}
+                  isActive={activeChemical === "Medium"}
+                  isConfirmed={confirmed.Medium}
+                  onClick={() => setActiveChemical("Medium")}
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Trypsin Input */}
-          <div className="input-group">
-            <ColorBlock color="orange" />
-            <InputField
-              text="Enter a volume of Trypsin:"
-              volume={volumes.Trypsin}
-              isActive={activeChemical === "Trypsin"}
-              isConfirmed={confirmed.Trypsin}
-              onClick={() => setActiveChemical("Trypsin")}
+          {/* Bottom controls section */}
+          <div className="bottom-controls">
+            {/* Action Buttons */}
+            <ActionButtons
+              onIncrease={handleIncrease}
+              onDecrease={handleDecrease}
+              onConfirm={handleConfirm}
             />
+
+            {/* CultureSection */}
+            <CultureSection onStart={handleStartCellCulture} />
           </div>
-
-          {/* Medium Input */}
-          <div className="input-group">
-            <ColorBlock color="pink" />
-            <InputField
-              text="Enter a volume of Medium:"
-              volume={volumes.Medium}
-              isActive={activeChemical === "Medium"}
-              isConfirmed={confirmed.Medium}
-              onClick={() => setActiveChemical("Medium")}
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <ActionButtons
-            onIncrease={handleIncrease}
-            onDecrease={handleDecrease}
-            onConfirm={handleConfirm}
-          />
-
-          {/* Pass the function to CultureSection */}
-          <CultureSection onStart={handleStartCellCulture} />
         </article>
       </main>
 
@@ -180,38 +188,83 @@ const InputDesign = () => {
           display: flex;
           justify-content: center;
           align-items: center;
-          padding: 20px;
+          padding: 0;
         }
 
         .content-card {
           background-color: white;
-          border-radius: 32px;
-          padding: 32px;
-          max-width: 1000px;
+          border-radius: 0;
+          padding: 32px 24px;
+          width: 100%;
+          min-height: 100vh;
           display: flex;
           flex-direction: column;
-          gap: 20px;
+          justify-content: space-between; /* Push main up, culture down */
+        }
+
+        .main-content {
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+          /* Removed specific margin-bottom value */
         }
 
         .header {
           font-family: "Plus Jakarta Sans", sans-serif;
-          font-size: 24px;
+          font-size: 28px;
           font-weight: 600;
-          margin: 0 0 20px 0;
+          margin: 0 0 30px 0;
           text-align: center;
+          flex-shrink: 0;
+        }
+
+        .input-fields-container {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-evenly;
+          flex-grow: 1;
+          min-height: 50vh; /* Ensure it takes up significant vertical space */
         }
 
         .input-group {
           display: flex;
           align-items: stretch;
           gap: 16px;
-          margin-bottom: 16px;
+          /* Removed specific margin-bottom as spacing is now handled by justify-content: space-evenly */
         }
 
-        @media (max-width: 480px) and (min-height: 800px) {
+        .input-group:last-of-type {
+          margin-bottom: 0;
+        }
+
+        .bottom-controls {
+          display: flex;
+          flex-direction: column;
+          gap: 4vh;
+          margin-top: 5vh; /* Add some space above bottom controls */
+        }
+
+        @media (max-width: 480px) {
           .content-card {
-            padding: 24px;
-            max-width: 480px;
+            padding: 28px 20px;
+          }
+          
+          .header {
+            font-size: 24px;
+            margin: 0 0 25px 0;
+          }
+
+          .input-fields-container {
+            min-height: 45vh; /* Slightly less on smaller screens */
+          }
+
+          .input-group {
+            gap: 12px;
+          }
+
+          .bottom-controls {
+            gap: 3vh;
+            margin-top: 4vh;
           }
         }
       `}</style>
