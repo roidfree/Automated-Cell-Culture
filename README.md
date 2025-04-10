@@ -2,6 +2,9 @@
 
 A web-based control system for managing peristaltic pumps in cell culture experiments using Arduino-controlled hardware and a Flask backend, running on a Raspberry Pi 4 with touchscreen display.
 
+This project explores automated cell culture techniques. Check out the video below for a demonstration:
+[![Custom Thumbnail](./thumbnail.png)](https://youtu.be/CP_furnj_WU)
+
 ## Overview
 This project provides a web interface to control and monitor peristaltic pumps for cell culture experiments. It consists of:
 - A Flask backend API for handling web requests
